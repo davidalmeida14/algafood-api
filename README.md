@@ -1,5 +1,5 @@
 # algafood-api
-Uma API para realização de pedidos em restaurantes
+- Uma API para realização de pedidos em restaurantes
 
 # Gerenciamento de Cozinhas
 
