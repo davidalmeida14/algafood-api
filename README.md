@@ -23,3 +23,4 @@ GET /restaurantes/{id} - Buscar restaurante através de seu identificador.
 POST /restaurantes - Cadastro de um novo restaurante.
 PUT /restaurantes/{id} - Atualizar um restaurante
 DELETE /restaurantes/{id} - Exclui restaurante específico por id
+
