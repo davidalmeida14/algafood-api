@@ -19,4 +19,7 @@ public class CidadeModel {
 	@NotNull
 	private EstadoModel estado;
 	
+	@NotNull
+	private Boolean ativo;
+	
 }

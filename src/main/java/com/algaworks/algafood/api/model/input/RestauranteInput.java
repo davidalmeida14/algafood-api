@@ -21,8 +21,13 @@ public class RestauranteInput {
 	@NotNull
 	private BigDecimal taxaFrete;
 	
+	private Boolean ativo;
+	
 	@Valid
 	@NotNull
 	private CozinhaIdInput cozinha;
+	
+	@Valid
+	private EnderecoInput endereco;
 	
 }

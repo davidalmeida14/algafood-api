@@ -26,8 +26,11 @@ import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 import com.algaworks.algafood.infraestructure.repository.EstadoRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class EstadoController {
 
 	@Autowired
@@ -46,7 +49,7 @@ public class EstadoController {
 	public List<Estado> listar() {
 		return estadoRepository.findAll();
 	}
-
+	
 	@PostMapping
 	public ResponseEntity<EstadoModel> adicionar(@RequestBody @Valid EstadoInput estado) {
 		
@@ -61,7 +64,11 @@ public class EstadoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<EstadoModel> buscar(@PathVariable Long id) {
+		log.info("Buscando estado de id: {}", id);
+		
 		EstadoModel estadoResponse = estadoAssembler.toModel(estadoService.buscarOuFalhar(id)); 
+		
+		log.info("Estado buscado: {}", estadoResponse);
 		return ResponseEntity.ok(estadoResponse);
 	}
 

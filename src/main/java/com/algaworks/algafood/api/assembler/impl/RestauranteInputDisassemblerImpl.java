@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.algaworks.algafood.api.assembler.ConverterDisassembler;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
+import com.algaworks.algafood.domain.model.Cidade;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 
 @Component
@@ -19,6 +21,12 @@ public class RestauranteInputDisassemblerImpl implements ConverterDisassembler<R
 	}
 	
 	public void copyToDomainObject(RestauranteInput input, Restaurante restaurante) {
+		restaurante.setCozinha(new Cozinha());
+		
+		if(restaurante.getEndereco() != null ) {
+			restaurante.getEndereco().setCidade(new Cidade());
+		}
+		
 		modelMapper.map(input, restaurante);
 	}
 

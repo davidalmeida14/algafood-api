@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.controller;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,9 @@ import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.CozinhaIdInput;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validator.ValidacaoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.algaworks.algafood.infraestructure.repository.CozinhaRepository;
@@ -65,17 +70,19 @@ public class RestauranteController {
 	private SmartValidator validator;
 
 	@GetMapping
+	@Cacheable(value = "restaurantes")
 	@ResponseStatus(HttpStatus.OK)
 	public List<RestauranteModel> listar() throws JsonProcessingException {
+		System.out.println(LocalDateTime.now());
 		return restauranteAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
+	@Cacheable(value = "restaurante")
 	public ResponseEntity<RestauranteModel> buscar(@PathVariable Long id) {
 		Restaurante restaurante = cadastroRestaurante.buscar(id);
 		return ResponseEntity.ok(restauranteAssembler.toModel(restaurante));
 	}
-	
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -92,10 +99,21 @@ public class RestauranteController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<RestauranteModel> atualizar(@PathVariable Long id, 
 									   @Valid @RequestBody RestauranteInput restauranteInput) {
+		try {
+			Restaurante restauranteBuscado = cadastroRestaurante.buscar(id);
+			
+			restauranteDisassembler.copyToDomainObject(restauranteInput, restauranteBuscado);
+			
+			Restaurante restauranteAtualizado = cadastroRestaurante.atualizarRestaurante(restauranteBuscado);
+			
+			RestauranteModel modelResponse = restauranteAssembler.toModel(restauranteAtualizado);
+			
+			return ResponseEntity.ok(modelResponse);
+		} catch (CidadeNaoEncontradaException | CozinhaNaoEncontradaException ex) {
+			throw new NegocioException(ex.getMessage());
+		}
+				
 		
-		Restaurante restaurante = cadastroRestaurante.buscar(id);
-		
-		return ResponseEntity.ok(restauranteAssembler.toModel(cadastroRestaurante.atualizar(id, restaurante)));
 	}
 
 	@PatchMapping("/{id}")
@@ -159,6 +177,18 @@ public class RestauranteController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void excluir(@PathVariable Long id) {
 		cadastroRestaurante.excluir(id);
+	}
+	
+	@PutMapping("/{id}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativar(@PathVariable("id") Long id) {
+		cadastroRestaurante.ativar(id);
+	}
+	
+	@DeleteMapping("/{id}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable("id") Long id) {
+		cadastroRestaurante.inativar(id);
 	}
 	
 	public RestauranteInput toInputModel(Restaurante restaurante) {
