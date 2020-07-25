@@ -1,4 +1,4 @@
-# algafood-api
+# ALGAFOOD
 - O Algafood é uma API desenvolvida durante o treinamento Especialista Spring REST, que tem como principal papel fornecer recursos para gestão de restaurantes, pedidos, pagamentos.
 
 # Gerenciamento de Cozinhas
