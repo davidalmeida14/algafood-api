@@ -79,6 +79,13 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
+		<!-- Logger -->
+		<dependency>
+			<groupId>biz.paluch.logging</groupId>
+			<artifactId>logstash-gelf</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
 	</dependencies>
 	<repositories>
 		<repository>

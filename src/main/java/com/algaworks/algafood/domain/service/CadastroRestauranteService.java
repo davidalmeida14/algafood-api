@@ -12,7 +12,9 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteEmUsoException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.infraestructure.repository.CozinhaRepository;
 import com.algaworks.algafood.infraestructure.repository.RestauranteRepository;
@@ -30,7 +32,13 @@ public class CadastroRestauranteService {
 
 	@Autowired
 	CadastroCozinhaService cozinhaService;
-
+	
+	@Autowired
+	private CadastroCidadeService cidadeService;
+	
+	@Autowired
+	private FormaPagamentoService formaPagamentoService;
+	
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 
@@ -64,7 +72,7 @@ public class CadastroRestauranteService {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
-
+		
 		BeanUtils.copyProperties(restaurante, restauranteBuscado, "id", "formaPagamento", "endereco", "dataCadastro");
 
 		restauranteBuscado.setCozinha(cozinhaBuscada);
@@ -72,6 +80,18 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restauranteBuscado);
 	}
 
+	@Transactional
+	public void ativar(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.ativar();
+	}
+	
+	@Transactional
+	public void inativar(Long restauranteId) {
+		Restaurante restaurante = buscar(restauranteId);
+		restaurante.inativar();
+	}
+	
 	public Restaurante buscar(Long id) {
 		return restauranteRepository.findById(id).orElseThrow(
 				() -> new RestauranteNaoEncontradoException(id));
@@ -88,5 +108,37 @@ public class CadastroRestauranteService {
 			throw new RestauranteEmUsoException(id);
 		}
 	}
+	
+	@Transactional
+	public Restaurante atualizarRestaurante(Restaurante restaurante) {
+		
+		Long cozinhaId = restaurante.getCozinha().getId();
+		Long cidadeId = restaurante.getEndereco().getCidade().getId();
+		
+		Cozinha cozinha = cozinhaService.buscar(cozinhaId);
+		Cidade cidade = cidadeService.buscar(cidadeId);
+	
+		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
+		
+		return restauranteRepository.save(restaurante);
+	}
+	
+	@Transactional
+	public void desassociarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+		
+		Restaurante restaurante = buscar(idRestaurante);
+		FormaPagamento formaPagamento = formaPagamentoService.buscar(idFormaPagamento);
+		restaurante.removerFormaPagamento(formaPagamento);
+		
+	}
+	
+	@Transactional
+	public void associarFormaPagamento(Long idRestaurante, Long idFormaPagamento) {
+		Restaurante restaurante = buscar(idRestaurante);
+		FormaPagamento formaPagamento = formaPagamentoService.buscar(idFormaPagamento);
+		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+
 
 }

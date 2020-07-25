@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -252,7 +253,7 @@ public class CadastroRestauranteIT {
 		restauranteSaulos.setNome("Saulos - Restaurante dos Estados");
 		restauranteSaulos.setTaxaFrete(BigDecimal.valueOf(9.5));
 		restauranteSaulos.setEndereco(endereco);
-		restauranteSaulos.setFormasPagamentos(Lists.newArrayList(pagamentoCartao));
+		//restauranteSaulos.setFormasPagamentos(Lists.newArrayList(pagamentoCartao));
 		
 		restauranteSaulos = restauranteRepository.save(restauranteSaulos);
 		
@@ -261,7 +262,7 @@ public class CadastroRestauranteIT {
 		barDoCusCuz.setNome("Bar do CusCuz - Restaurante dos Estados");
 		barDoCusCuz.setTaxaFrete(BigDecimal.valueOf(8.3));
 		barDoCusCuz.setEndereco(endereco);
-		barDoCusCuz.setFormasPagamentos(Lists.newArrayList(pagamentoCartao));
+		//barDoCusCuz.setFormasPagamentos(Lists.newArrayList(pagamentoCartao));
 		
 		barDoCusCuz = restauranteRepository.save(barDoCusCuz);
 		

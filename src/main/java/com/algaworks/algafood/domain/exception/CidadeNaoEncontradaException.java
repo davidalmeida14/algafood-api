@@ -2,7 +2,7 @@ package com.algaworks.algafood.domain.exception;
 
 import com.algaworks.algafood.domain.service.Constantes;
 
-public class CidadeNaoEncontradaException extends EntidadeNaoEncontradaException{
+public class CidadeNaoEncontradaException extends EntidadeNaoEncontradaException {
 
 	/**
 	 * 

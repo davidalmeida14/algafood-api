@@ -40,7 +40,10 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @ControllerAdvice
+@Slf4j
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_ERRO_INESPERADO = "Ocorreu um erro inesperado. Tente novamente e se o erro persistir, entre em contato com o administrador do sistema.";
@@ -187,6 +190,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 			if (objectError instanceof FieldError) {
 				name = ((FieldError) objectError).getField();
+				if(name.length() > 0) {
+					name = retornaStringComPrimeiraLetraMaiuscula(name);
+				}
 			}
 			return Problem.Object.builder().name(name).userMessage(message).build();
 
@@ -199,6 +205,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.objects(problemObjects).build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
+	private String retornaStringComPrimeiraLetraMaiuscula(String name) {
+		return name.substring(0,1).toUpperCase() + name.substring(1);
 	}
 
 	private ResponseEntity<Object> handleUnrecognizedPropertyException(PropertyBindingException ex, HttpHeaders headers,
@@ -277,6 +287,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		if (body == null) {
 			body = Problem.builder().timestamp(LocalDateTime.now()).title(status.getReasonPhrase())
 					.status(status.value()).userMessage(MSG_ERRO_INESPERADO).build();
+			
 		} else if (body instanceof String) {
 			body = Problem.builder().timestamp(LocalDateTime.now()).title((String) body).status(status.value())
 					.userMessage(MSG_ERRO_INESPERADO).build();
