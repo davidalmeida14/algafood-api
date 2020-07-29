@@ -139,6 +139,17 @@ public class CadastroRestauranteService {
 		FormaPagamento formaPagamento = formaPagamentoService.buscar(idFormaPagamento);
 		restaurante.adicionarFormaPagamento(formaPagamento);
 	}
-
+	
+	@Transactional 
+	public void abrir(Long id) {
+		Restaurante restauranteBuscado = buscar(id);
+		restauranteBuscado.abrir();
+	}
+	
+	@Transactional
+	public void fechar(Long id) {
+		Restaurante restauranteBuscado = buscar(id);
+		restauranteBuscado.fechar();
+	}
 
 }
