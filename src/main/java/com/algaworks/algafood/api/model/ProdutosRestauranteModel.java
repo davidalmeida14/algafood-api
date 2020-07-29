@@ -19,5 +19,7 @@ public class ProdutosRestauranteModel {
 	private BigDecimal preco;
 	
 	private Boolean ativo;
+	
+	private Boolean aberto;
 
 }

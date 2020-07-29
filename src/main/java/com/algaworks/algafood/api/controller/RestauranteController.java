@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -189,6 +190,20 @@ public class RestauranteController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable("id") Long id) {
 		cadastroRestaurante.inativar(id);
+	}
+	
+	@PatchMapping("/{id}/abertura")
+	@CacheEvict(value = "restaurante")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void abrir(@PathVariable Long id) {
+		cadastroRestaurante.abrir(id);
+	}
+	
+	@PatchMapping("/{id}/fechamento")
+	@CacheEvict(value = "restaurante")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void fechar(@PathVariable Long id) {
+		cadastroRestaurante.fechar(id);
 	}
 	
 	public RestauranteInput toInputModel(Restaurante restaurante) {
