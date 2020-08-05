@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.algaworks.algafood.api.model.input.SenhaInput;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.infraestructure.repository.UsuarioRepository;
 
@@ -21,6 +22,9 @@ public class CadastroUsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private CadastroGrupoService grupoService;
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -73,6 +77,20 @@ public class CadastroUsuarioService {
 	
 	private String recuperarMensagemErroPorId(Long id, String keyMessage) {
 		return messageSource.getMessage(keyMessage, new Object[] {id.toString()}, LocaleContextHolder.getLocale());
+	}
+
+	@Transactional
+	public void desassociarGrupo(Long idUsuario, Long idGrupo) {
+		Usuario usuarioBuscado = buscar(idUsuario);
+		Grupo grupoBuscado = grupoService.buscar(idGrupo);
+		usuarioBuscado.desassociarGrupo(grupoBuscado);
+	}
+	
+	@Transactional
+	public void associarGrupo(Long idUsuario, Long idGrupo) {
+		Usuario usuarioBuscado = buscar(idUsuario);
+		Grupo grupoBuscado = grupoService.buscar(idGrupo);
+		usuarioBuscado.associarGrupo(grupoBuscado);
 	}
 
 }
