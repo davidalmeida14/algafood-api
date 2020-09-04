@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,11 +27,14 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.algaworks.algafood.core.validator.Groups;
 import com.algaworks.algafood.core.validator.ValorZeroIncluiDescricao;
+import com.algaworks.algafood.domain.model.enums.StatusPedido;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -82,6 +87,13 @@ public class Restaurante {
 			inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private Set<FormaPagamento> formasPagamentos = new HashSet<>(); 
 	
+	@ManyToMany
+	@JoinTable(name = "restaurante_usuario_responsavel", 
+			   joinColumns = @JoinColumn(name = "restaurante_id"),
+			   inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+	@Cascade(CascadeType.ALL)
+	private Set<Usuario> usuarios = new HashSet<Usuario>();
+	
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos = new ArrayList<>();
 	
@@ -109,6 +121,14 @@ public class Restaurante {
 	
 	public void fechar() {
 		this.aberto = false;
+	}
+	
+	public void associarUsuario(Usuario usuario) {
+		getUsuarios().add(usuario);
+	}
+	
+	public void desassociarUsuario(Usuario usuario) {
+		getUsuarios().remove(usuario);
 	}
 	
 }

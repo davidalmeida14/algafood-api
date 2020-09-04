@@ -27,6 +27,7 @@ public class Usuario {
 	
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		@EqualsAndHashCode.Include
 		private long id;
 		
 		@Column(nullable = false)

@@ -40,10 +40,8 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
-import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
-@Slf4j
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_ERRO_INESPERADO = "Ocorreu um erro inesperado. Tente novamente e se o erro persistir, entre em contato com o administrador do sistema.";

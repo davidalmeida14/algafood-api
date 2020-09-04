@@ -23,6 +23,8 @@ public class Constantes {
 	public static final String KEY_GRUPO_NAO_ENCONTRADO = "grupo-nao-encontrado";
 	public static final String MSG_USUARIO_EXISTENTE = "Já existe um usuário cadastrado com e-mail: %s";
 	
+	public static final String MSG_PEDIDO_NAO_ENCONTRADO = "O pedido de id: %s não foi encontrado";
+	
 	
 	
 }
