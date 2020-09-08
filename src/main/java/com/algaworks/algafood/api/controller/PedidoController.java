@@ -2,12 +2,10 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
+import com.algaworks.algafood.api.model.input.PedidoInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.algaworks.algafood.api.assembler.impl.PedidoModelAssemblerImpl;
 import com.algaworks.algafood.api.assembler.impl.PedidoResumoModelAssemblerImpl;
@@ -15,6 +13,8 @@ import com.algaworks.algafood.api.model.PedidoModel;
 import com.algaworks.algafood.api.model.PedidoResumoModel;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.service.CadastroPedidoService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -41,6 +41,11 @@ public class PedidoController {
 		Pedido buscar = pedidoService.buscar(pedidoId);
 		PedidoModel model = pedidoAssembler.toModel(buscar);
 		return ResponseEntity.ok(model);
+	}
+
+	@PostMapping
+	public ResponseEntity<?> salvar (@RequestBody @Valid PedidoInput pedido) {
+		return null;
 	}
 
 }
