@@ -1,19 +1,20 @@
 package com.algaworks.algafood.modelmapper;
 
-import java.time.LocalDateTime;
-
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.algaworks.algafood.api.model.EnderecoModel;
+import com.algaworks.algafood.api.model.input.ItemPedidoInput;
 import com.algaworks.algafood.domain.model.Endereco;
+import com.algaworks.algafood.domain.model.ItemPedido;
 
 @Configuration
 public class ModelMapperConfig {
 
 	TypeMap<Endereco, EnderecoModel> typeMap = null;
+	TypeMap<ItemPedidoInput, ItemPedido> typeMapPedido;
 	
 	/**
 	 * Registra Bean ModelMapper no contexto do Spring
@@ -32,7 +33,7 @@ public class ModelMapperConfig {
 		 * @params ClasseOrigem -> ClasseDestino
 		 */
 		this.typeMap = modelMapper.createTypeMap(Endereco.class, EnderecoModel.class);
-		
+		this.typeMapPedido = modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class);
 		adicionaMapeamento(typeMap);
 		
 		return modelMapper;
@@ -52,5 +53,6 @@ public class ModelMapperConfig {
 		this.typeMap.<String>addMapping(
 				src -> src.getCidade().getEstado().getNome(), 
 				(dest, value) -> dest.getCidade().setEstado(value));
+		this.typeMapPedido.addMappings(mapper -> mapper.skip(ItemPedido::setId));
 	}
 }

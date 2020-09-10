@@ -1,10 +1,12 @@
 package com.algaworks.algafood.api.model.input;
 
-import com.algaworks.algafood.domain.model.ItemPedido;
+import lombok.Data;
 
+@Data
 public class ItemPedidoInput {
 
     private Long produtoId;
     private Integer quantidade;
+    private String observacao;
 
 }

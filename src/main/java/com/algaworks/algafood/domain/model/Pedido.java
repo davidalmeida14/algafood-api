@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -60,7 +61,7 @@ public class Pedido {
 	@JoinColumn(nullable = false, name = "usuario_cliente_id")
 	private Usuario cliente;
 	
-	@OneToMany(mappedBy = "pedido")
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens;
 	
 	@Enumerated(EnumType.STRING)
@@ -71,7 +72,7 @@ public class Pedido {
 	
 	public void calcularValorTotal() {
 	    this.subtotal = getItens().stream()
-	        .map(item -> item.getPrecoTotal())
+	        .map(item -> item.getProduto().getPreco())
 	        .reduce(BigDecimal.ZERO, BigDecimal::add);
 	    
 	    this.valorTotal = this.subtotal.add(this.taxaFrete);
