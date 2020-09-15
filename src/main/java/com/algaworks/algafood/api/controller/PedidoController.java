@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -74,6 +75,23 @@ public class PedidoController {
 		return ResponseEntity.ok().body(pedidoAssembler.toModel(pedidoEmitido));
 	}
 
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PutMapping("/{pedidoId}/confirmacao")
+	public void confirmacao(@PathVariable("pedidoId") Long pedidoId) {
+		pedidoService.confirmar(pedidoId);
+	}
+	
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PutMapping("/{pedidoId}/entrega")
+	public void entrega(@PathVariable("pedidoId") Long pedidoId) {
+		pedidoService.entregar(pedidoId);
+	}
+	
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	@PutMapping("/{pedidoId}/cancelamento")
+	public void cancelamento(@PathVariable("pedidoId") Long pedidoId) {
+		pedidoService.cancelar(pedidoId);
+	}
 	
 	public static void main(String[] args) throws JsonProcessingException {
 		

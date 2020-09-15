@@ -15,6 +15,7 @@ import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
+import com.algaworks.algafood.domain.model.enums.StatusPedido;
 import com.algaworks.algafood.infraestructure.repository.PedidoRepository;
 
 @Service
@@ -91,5 +92,68 @@ public class CadastroPedidoService {
 			throw new NegocioException("Forma de pagamento %s não é aceita pelo restaurante");
 		}
 		return true;
+	}
+
+	/**
+	 * Método que valida se pedido está elegível a confirmação
+	 * @param pedidoBuscado
+	 */
+	private void validarStatusPedidoConfirmar(Pedido pedidoBuscado) {
+		
+		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.CONFIRMADO.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
+		if(!StatusPedido.CRIADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.CONFIRMADO.equals(pedidoBuscado.getStatusPedido())) {
+			throw new NegocioException(mensagemErro);
+		}
+		
+	}
+	
+	private void validarStatusPedidoCancelar(Pedido pedidoBuscado) {
+		
+		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.CANCELADO.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
+		if(!StatusPedido.CRIADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.CANCELADO.equals(pedidoBuscado.getStatusPedido())) {
+			throw new NegocioException(mensagemErro);
+		}
+		
+	}
+	
+	private void validarStatusPedidoEntregar(Pedido pedidoBuscado) {
+		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.ENTREGUE.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
+		if(!StatusPedido.CONFIRMADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.ENTREGUE.equals(pedidoBuscado.getStatusPedido())) {
+			throw new NegocioException(mensagemErro);
+		}
+		
+	}
+
+	@Transactional
+	public void confirmar(Long pedidoId) {
+		Pedido pedidoBuscado = buscar(pedidoId);
+		pedidoBuscado.confirmar();
+	}
+	
+	@Transactional
+	public void entregar(Long pedidoId) {
+		Pedido pedidoBuscado = buscar(pedidoId);
+		pedidoBuscado.entregar();
+		
+	}
+	
+	@Transactional
+	public void cancelar(Long pedidoId) {
+		Pedido pedidoBuscado = buscar(pedidoId);
+		pedidoBuscado.cancelar();
+		
+	}
+	
+	public void validarStatusPedido(Pedido pedido, StatusPedido statusEsperado, StatusPedido statusAlterar) {
+		
+		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", 
+								pedido.getId(),
+								statusAlterar.getMensagem(),
+								pedido.getStatusPedido().getMensagem()
+								);
+		
+		if(!pedido.getStatusPedido().equals(statusEsperado) && !pedido.getStatusPedido().equals(statusAlterar)) {
+			throw new NegocioException(mensagemErro);
+		}
 	}
 }

@@ -1,20 +1,20 @@
 set foreign_key_checks = 0;
 
-delete from cidade;
-delete from cozinha;
-delete from estado;
-delete from forma_pagamento;
-delete from grupo;
-delete from grupo_permissao;
-delete from permissao;
-delete from produto;
-delete from restaurante;
-delete from restaurante_forma_pagamento;
-delete from usuario;
-delete from usuario_grupo;
-delete from restaurante_usuario_responsavel;
-delete from item_pedido;
-delete from pedido;
+truncate table cidade;
+truncate table cozinha;
+truncate table estado;
+truncate table forma_pagamento;
+truncate table grupo;
+truncate table grupo_permissao;
+truncate table permissao;
+truncate table produto;
+truncate table restaurante;
+truncate table restaurante_forma_pagamento;
+truncate table usuario;
+truncate table usuario_grupo;
+truncate table restaurante_usuario_responsavel;
+truncate table item_pedido;
+truncate table pedido;
 
 set foreign_key_checks = 1;
 
