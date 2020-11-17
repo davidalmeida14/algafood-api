@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.infraestructure.repository.ProdutoRepository;
 
 @Service
+@Slf4j
 public class CadastroProdutoService {
 	
 	
@@ -32,6 +34,10 @@ public class CadastroProdutoService {
 	
 	@Autowired
 	private CadastroRestauranteService restauranteService;
+
+	public CadastroProdutoService(){
+		log.info("Carregando a classe: {}", this.getClass().getSimpleName());
+	}
 
 	public Produto buscarProdutoRestaurante(Produto produto, Restaurante restaurante) {
 		validarDadosRecebidos(produto, restaurante);

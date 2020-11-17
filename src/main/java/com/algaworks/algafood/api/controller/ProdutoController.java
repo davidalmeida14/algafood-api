@@ -9,13 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.algaworks.algafood.api.assembler.impl.ProdutoAssemblerImpl;
 import com.algaworks.algafood.api.assembler.impl.ProdutoDisassemblerImpl;
@@ -48,9 +42,15 @@ public class ProdutoController {
 	
 	@GetMapping
 	@Cacheable(value = "produto")
-	public List<ProdutosRestauranteModel> listar(@PathVariable("id") Long id) {
+	public List<ProdutosRestauranteModel> listar(@PathVariable("id") Long id, @RequestParam(required = false) boolean incluirTodosProdutos) {
 		Restaurante restaurante = restauranteService.buscar(id);
-		return produtoAssembler.toCollectionModel(produtoRepository.findByRestaurante(restaurante));
+		List<Produto> todosProdutos = null;
+		if(incluirTodosProdutos) {
+			todosProdutos = produtoRepository.findByRestaurante(restaurante);
+		} else {
+			todosProdutos = produtoRepository.findByRestauranteAndAtivo(restaurante, true);
+		}
+		return produtoAssembler.toCollectionModel(todosProdutos);
 	}
 	
 	@Cacheable(value = "produto")

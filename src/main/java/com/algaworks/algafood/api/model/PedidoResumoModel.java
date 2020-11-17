@@ -3,15 +3,16 @@ package com.algaworks.algafood.api.model;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+//@JsonFilter("pedidoFilter")
 @Data
 @EqualsAndHashCode
 public class PedidoResumoModel {
 
-	@EqualsAndHashCode.Include
-	private long id;
+	private String codigo;
 
 	private BigDecimal subtotal;
 

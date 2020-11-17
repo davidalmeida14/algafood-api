@@ -44,8 +44,8 @@ public class CadastroPedidoService {
 		return pedidos;
 	}
 
-	public Pedido buscar(Long pedidoId) {
-		return pedidoRepository.findById(pedidoId).orElseThrow(() -> new PedidoNaoEncontradoException(pedidoId));
+	public Pedido buscar(String codigo) {
+		return pedidoRepository.findByCodigo(codigo).orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
 	}
 
 	@Transactional
@@ -94,52 +94,22 @@ public class CadastroPedidoService {
 		return true;
 	}
 
-	/**
-	 * Método que valida se pedido está elegível a confirmação
-	 * @param pedidoBuscado
-	 */
-	private void validarStatusPedidoConfirmar(Pedido pedidoBuscado) {
-		
-		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.CONFIRMADO.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
-		if(!StatusPedido.CRIADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.CONFIRMADO.equals(pedidoBuscado.getStatusPedido())) {
-			throw new NegocioException(mensagemErro);
-		}
-		
-	}
-	
-	private void validarStatusPedidoCancelar(Pedido pedidoBuscado) {
-		
-		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.CANCELADO.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
-		if(!StatusPedido.CRIADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.CANCELADO.equals(pedidoBuscado.getStatusPedido())) {
-			throw new NegocioException(mensagemErro);
-		}
-		
-	}
-	
-	private void validarStatusPedidoEntregar(Pedido pedidoBuscado) {
-		String mensagemErro = String.format("O pedido %d não pode ter seu status alterado para %s pois está com status: %s", pedidoBuscado.getId(), StatusPedido.ENTREGUE.getMensagem(), pedidoBuscado.getStatusPedido().getMensagem());
-		if(!StatusPedido.CONFIRMADO.equals(pedidoBuscado.getStatusPedido()) && !StatusPedido.ENTREGUE.equals(pedidoBuscado.getStatusPedido())) {
-			throw new NegocioException(mensagemErro);
-		}
-		
-	}
-
 	@Transactional
-	public void confirmar(Long pedidoId) {
-		Pedido pedidoBuscado = buscar(pedidoId);
+	public void confirmar(String codigo) {
+		Pedido pedidoBuscado = buscar(codigo);
 		pedidoBuscado.confirmar();
 	}
 	
 	@Transactional
-	public void entregar(Long pedidoId) {
-		Pedido pedidoBuscado = buscar(pedidoId);
+	public void entregar(String codigo) {
+		Pedido pedidoBuscado = buscar(codigo);
 		pedidoBuscado.entregar();
 		
 	}
 	
 	@Transactional
-	public void cancelar(Long pedidoId) {
-		Pedido pedidoBuscado = buscar(pedidoId);
+	public void cancelar(String codigo) {
+		Pedido pedidoBuscado = buscar(codigo);
 		pedidoBuscado.cancelar();
 		
 	}

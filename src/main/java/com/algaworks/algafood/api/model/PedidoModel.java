@@ -13,8 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 public class PedidoModel {
 
-	@EqualsAndHashCode.Include
-	private long id;
+	private String codigo;
 
 	private BigDecimal subtotal;
 

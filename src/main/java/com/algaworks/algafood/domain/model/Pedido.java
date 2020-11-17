@@ -3,20 +3,9 @@ package com.algaworks.algafood.domain.model;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,7 +22,10 @@ public class Pedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-
+	
+	@Column
+	private String codigo;
+	
 	@Column(nullable = false)
 	private BigDecimal subtotal;
 
@@ -107,6 +99,11 @@ public class Pedido {
 			throw new NegocioException(mensagemErro);
 		}
 		this.statusPedido = novoStatus;
+	}
+
+	@PrePersist
+	private void loadCodigoPedido(){
+		setCodigo(UUID.randomUUID().toString());
 	}
 
 }

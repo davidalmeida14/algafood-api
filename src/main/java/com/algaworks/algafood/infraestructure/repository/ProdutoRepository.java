@@ -11,5 +11,6 @@ import com.algaworks.algafood.domain.model.Restaurante;
 public interface ProdutoRepository extends CustomJpaRepository<Produto, Long>{
 
 	List<Produto> findByRestaurante(Restaurante restaurante);
+	List<Produto> findByRestauranteAndAtivo(Restaurante restaurante, boolean ativo);
 
 }

@@ -8,28 +8,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.algaworks.algafood.api.model.view.RestauranteResumoView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.algaworks.algafood.api.assembler.impl.RestauranteInputDisassemblerImpl;
 import com.algaworks.algafood.api.assembler.impl.RestauranteModelAssemblerImpl;
@@ -73,11 +69,70 @@ public class RestauranteController {
 
 	@GetMapping
 	@Cacheable(value = "restaurantes")
-	@ResponseStatus(HttpStatus.OK)
-	public List<RestauranteModel> listar() throws JsonProcessingException {
-		System.out.println(LocalDateTime.now());
+	@ResponseStatus(code = HttpStatus.OK)
+	@JsonView(RestauranteResumoView.Resumo.class)
+	public List<RestauranteModel> listar(){
 		return restauranteAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
+
+	@GetMapping(params = "projecao=apenasNome")
+	@Cacheable(value = "restaurantes")
+	@ResponseStatus(code = HttpStatus.OK)
+	@JsonView(RestauranteResumoView.ApenasIdENome.class)
+	public List<RestauranteModel> listarApenasIdENome(){
+		return restauranteAssembler.toCollectionModel(restauranteRepository.findAll());
+	}
+
+//	@GetMapping
+//	@Cacheable(value = "restaurantes")
+//	@ResponseStatus(code = HttpStatus.OK)
+//	public MappingJacksonValue listar(@RequestParam(required = false) String projecao){
+//		List<Restaurante> restaurantes = restauranteRepository.findAll();
+//		List<RestauranteModel> restauranteModels = restauranteAssembler.toCollectionModel(restaurantes);
+//		return mapearRetornoEsperado(restauranteModels, projecao);
+//	}
+
+	/**
+	 * MappingJackonView é uma classe que empacota alguns recursos de mapeamento de JSON. Sendo assim, é possível utilizar as projeções
+	 * setando-as programaticamente de acordo com uma regra definida de acordo com a necessidade do negócio.
+	 * @param restauranteModel
+	 * @param projecao
+	 * @return
+	 */
+	private MappingJacksonValue mapearRetornoEsperado(List<RestauranteModel> restauranteModel, String projecao) {
+		MappingJacksonValue mapping = new MappingJacksonValue(restauranteModel);
+		mapping.setSerializationView(RestauranteResumoView.ApenasIdENome.class);
+		if("completo".equals(projecao)) {
+			mapping.setSerializationView(null);
+		} else if("resumo".equals(projecao)){
+			mapping.setSerializationView(RestauranteResumoView.Resumo.class);
+		}
+		return mapping;
+	}
+
+	@GetMapping(params = "projecao=resumo")
+	@ResponseStatus(HttpStatus.OK)
+	@JsonView(RestauranteResumoView.Resumo.class)
+	public List<RestauranteModel> listarResumo() throws JsonProcessingException {
+		return listar();
+	}
+
+	@GetMapping(params = "projecao=nome")
+	@ResponseStatus(HttpStatus.OK)
+	@JsonView(RestauranteResumoView.ApenasIdENome.class)
+	public List<RestauranteModel> listarResumoApenasIdENome() throws JsonProcessingException {
+		return listar();
+	}
+
+//	@GetMapping
+//	@Cacheable(value = "restaurantes")
+//	@ResponseStatus(HttpStatus.OK)
+//	public List<RestauranteModel> listar() throws JsonProcessingException {
+//		System.out.println(LocalDateTime.now());
+//		return restauranteAssembler.toCollectionModel(restauranteRepository.findAll());
+//	}
+//
+
 
 	@GetMapping("/{id}")
 	@Cacheable(value = "restaurante")
