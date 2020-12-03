@@ -59,6 +59,7 @@ public class ProdutoController {
 		Produto produtoBuscado = cadastroProdutoService.buscarProdutoRestaurante(produto, restaurante);
 		return ResponseEntity.ok().body(produtoAssembler.toModel(produtoBuscado));
 	}
+
 	@PostMapping
 	@CacheEvict(value = "produto", allEntries = true)
 	public ResponseEntity<?> cadastrar(@PathVariable("id") Long restauranteId, @RequestBody @Valid ProdutoRestauranteInput produtoInput){
@@ -66,6 +67,7 @@ public class ProdutoController {
 		Produto produtoCadastrado = cadastroProdutoService.cadastrar(restauranteId, produto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(produtoAssembler.toModel(produtoCadastrado));
 	}
+
 	@PutMapping("/{idProduto}")
 	@CacheEvict(value = "produto")
 	public ResponseEntity<?> atualizarProduto(@PathVariable("id") Long restauranteId, 

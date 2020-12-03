@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.algaworks.algafood.infraestructure.repository.PedidoRepository;
+import com.algaworks.algafood.infraestructure.repository.filter.PedidoFilter;
+import com.algaworks.algafood.infraestructure.repository.spec.PedidoSpecs;
 import com.fasterxml.jackson.databind.ser.BeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -49,6 +52,9 @@ public class PedidoController {
 	@Autowired
 	private PedidoInputDisassembler pedidoInputDisassembler;
 
+	@Autowired
+	private PedidoRepository pedidoRepository;
+
 	private static final String PEDIDOFILTER = "pedidoFilter";
 
 
@@ -77,8 +83,8 @@ public class PedidoController {
 //	}
 
 	@GetMapping
-	public ResponseEntity<?> listarPedidos() {
-		List<Pedido> pedidos = pedidoService.listar();
+	public ResponseEntity<?> pesquisar(PedidoFilter filtro) {
+		List<Pedido> pedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 		List<PedidoResumoModel> collectionModel = pedidoResumoAssembler.toCollectionModel(pedidos);
 		return ResponseEntity.ok(collectionModel);
 	}
